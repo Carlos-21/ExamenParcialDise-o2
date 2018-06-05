@@ -11,7 +11,7 @@ import Frames.propiedad.Directorio;
 
 /**
  *
- * @author Seven
+ * @author 
  */
 public class Menu extends javax.swing.JFrame {
     private ListaEnlazada<Viaje> vuelos;
