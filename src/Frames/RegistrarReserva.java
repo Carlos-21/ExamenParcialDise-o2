@@ -20,12 +20,13 @@ import javax.swing.JOptionPane;
  * @author Seven
  */
 public class RegistrarReserva extends javax.swing.JFrame {
+
     private ListaEnlazada<Pasajero> pasajeros;
     private ListaEnlazada<Reserva> reservas;
     private DefaultTableModel tablaPasajeros;
     private ListaEnlazada<Viaje> vuelos;
     private Viaje auxiliar;
-    
+
     public RegistrarReserva() {
         initComponents();
         Directorio.ponerImagenLabel(FondoReservarVuelo, Directorio.fondo);
@@ -49,20 +50,24 @@ public class RegistrarReserva extends javax.swing.JFrame {
 
     public void setVuelos(ListaEnlazada<Viaje> vuelos) {
         this.vuelos = vuelos;
-        
-        Iterator<Viaje> ITVuelo = this.vuelos.getDescendingIterator();        
-        
+
+        Iterator<Viaje> ITVuelo = this.vuelos.getDescendingIterator();
+
         String inicial = null;
         boolean band = false;
+        int cant = 0;
         
-        while(ITVuelo.hasNext()){           
+        while (ITVuelo.hasNext()) {
             Viaje v = ITVuelo.next();
-            if(band == false){
+            cant++;
+            if (band == false) {
                 inicial = v.getOrigen();
                 band = true;
-            }            
-            listaOrigen.addItem(v.getOrigen());
-            if(v.getOrigen().equals(inicial)){
+            }
+            if( cant!= vuelos.longitud){
+                listaOrigen.addItem(v.getOrigen());
+            }           
+            if (v.getOrigen().equals(inicial) && cant!= vuelos.longitud) {
                 listaDestino.addItem(v.getDestino());
             }
         }
@@ -79,7 +84,6 @@ public class RegistrarReserva extends javax.swing.JFrame {
         textoAsientos.setText(String.valueOf(this.auxiliar.getAsientos().length - this.auxiliar.asientosReservados()));
     }
 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -225,13 +229,13 @@ public class RegistrarReserva extends javax.swing.JFrame {
 
     private void ButtonRegistrarPasajeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonRegistrarPasajeroActionPerformed
         AgregarPasajero agregar = new AgregarPasajero();
-       
+
         agregar.setPasajeros(pasajeros);
         agregar.setAsientosDisponibles(auxiliar.getAsientos().length - pasajeros.longitud);
         agregar.setVuelos(vuelos);
         agregar.setAuxiliar(auxiliar);
         agregar.setFecha(fechaVuelo.getDate());
-        
+
         agregar.setVisible(true);
         agregar.setLocationRelativeTo(null);
         this.dispose();
@@ -241,40 +245,38 @@ public class RegistrarReserva extends javax.swing.JFrame {
         Menu menu = new Menu();
         menu.setVisible(true);
         menu.setLocationRelativeTo(null);
-        
+
         this.dispose();
-        
+
         menu.setVuelos(vuelos);
     }//GEN-LAST:event_ButtonCancelarActionPerformed
 
     private void ButtonReservarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonReservarActionPerformed
         int numero = Integer.parseInt(textoNumeroVuelo.getText());
         Date fecha = fechaVuelo.getDate();
-        String tramo = String.valueOf(listaOrigen.getSelectedItem()) + "-" + 
-                       String.valueOf(listaDestino.getSelectedItem());
-        
-        Reserva reserva= new Reserva(numero, fecha, tramo, pasajeros);
+        String tramo = String.valueOf(listaOrigen.getSelectedItem()) + "-"
+                + String.valueOf(listaDestino.getSelectedItem());
+
+        Reserva reserva = new Reserva(numero, fecha, tramo, pasajeros);
         reserva.setPasajeros(pasajeros);
-        
-        if(numero != 0 && fecha != null && !tramo.isEmpty()){
+
+        if (numero != 0 && fecha != null && !tramo.isEmpty()) {
             reservas.insertarAlInicio(reserva);
             auxiliar.setReservas(reservas);
             JOptionPane.showMessageDialog(null, "Reserva registrada");
-        }
-        else{
+        } else {
             JOptionPane.showMessageDialog(null, "No se han escrito en los campos necesarios");
-        }   
+        }
     }//GEN-LAST:event_ButtonReservarActionPerformed
 
     private void listaOrigenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listaOrigenActionPerformed
         String opcion = String.valueOf(listaOrigen.getSelectedItem());
-        
+
         listaDestino.removeAllItems();
-        
-        Iterator<Viaje> ITVuelo = this.vuelos.getDescendingIterator();                
-        while(ITVuelo.hasNext()){         
+        Iterator<Viaje> ITVuelo = this.vuelos.getDescendingIterator();
+        while (ITVuelo.hasNext()) {
             Viaje v = ITVuelo.next();
-            if(v.getOrigen().equals(opcion)){
+            if (v.getOrigen().equals(opcion)) {
                 listaDestino.addItem(v.getDestino());
             }
         }
@@ -283,13 +285,13 @@ public class RegistrarReserva extends javax.swing.JFrame {
     private void listaDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listaDestinoActionPerformed
         String origen = String.valueOf(listaOrigen.getSelectedItem());
         String destino = String.valueOf(listaDestino.getSelectedItem());
-        
+
         boolean bandera = false;
-        
-        Iterator<Viaje> ITVuelo = this.vuelos.getDescendingIterator();                
-        while(ITVuelo.hasNext() && !bandera){         
+
+        Iterator<Viaje> ITVuelo = this.vuelos.getDescendingIterator();
+        while (ITVuelo.hasNext() && !bandera) {
             Viaje v = ITVuelo.next();
-            if(v.getOrigen().equals(origen) && v.getDestino().equals(destino)){
+            if (v.getOrigen().equals(origen) && v.getDestino().equals(destino)) {
                 textoNumeroVuelo.setText(v.getNumeroVuelo());
                 textoAsientos.setText(String.valueOf(v.getAsientos().length - v.asientosReservados()));
                 auxiliar = v;
@@ -297,32 +299,33 @@ public class RegistrarReserva extends javax.swing.JFrame {
                 bandera = true;
             }
         }
+
     }//GEN-LAST:event_listaDestinoActionPerformed
 
-    public void LLenarTabla(){
+    public void LLenarTabla() {
         tablaPasajeros = new DefaultTableModel();
-        
-        String[] cabecera = {"DNI","Nombres","Apellidos","Teléfono", "N° Asiento"};
+
+        String[] cabecera = {"DNI", "Nombres", "Apellidos", "Teléfono", "N° Asiento"};
         int longitud = pasajeros.longitud;
         String[][] datos = new String[longitud][5];
-        
+
         Iterator<Pasajero> ITPasajero = pasajeros.getDescendingIterator();
         int i = 0;
-        
-        while(ITPasajero.hasNext() && i < longitud){
+
+        while (ITPasajero.hasNext() && i < longitud) {
             Pasajero p = ITPasajero.next();
-            datos [i][0] = String.valueOf(p.getDni());
-            datos [i][1] = String.valueOf(p.getNombres());
-            datos [i][2] = String.valueOf(p.getApellidos());
-            datos [i][3] = String.valueOf(p.getTelefono());
-            datos [i][4] = String.valueOf(p.getAsiento());
+            datos[i][0] = String.valueOf(p.getDni());
+            datos[i][1] = String.valueOf(p.getNombres());
+            datos[i][2] = String.valueOf(p.getApellidos());
+            datos[i][3] = String.valueOf(p.getTelefono());
+            datos[i][4] = String.valueOf(p.getAsiento());
             i++;
         }
-        
+
         tablaPasajeros = new DefaultTableModel(datos, cabecera);
         ListaPasajeros.setModel(tablaPasajeros);
     }
-    
+
     /**
      * @param args the command line arguments
      */

@@ -168,6 +168,7 @@ public class AgregarPasajero extends javax.swing.JFrame {
         reservar.setVuelos(vuelos);
         reservar.setPasajeros(pasajeros);
         reservar.setAuxiliar(auxiliar, vuelos, fecha);
+        reservar.LLenarTabla();
         
         this.dispose();
     }//GEN-LAST:event_botonCancelarActionPerformed
